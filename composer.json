@@ -13,12 +13,20 @@
         "laravel/fortify": "^1.36",
         "laravel/framework": "^13.17",
         "laravel/jetstream": "^5.5",
+        "laravel/mcp": "^0.8.2",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.28",
         "laravel/tinker": "^3.0",
         "livewire/blaze": "^1.0",
         "livewire/livewire": "^3.6.4",
-        "predis/predis": "^3.5"
+        "predis/predis": "^3.5",
+        "socialiteproviders/facebook": "^4.1",
+        "socialiteproviders/instagram": "^5.2",
+        "socialiteproviders/pinterest": "^4.3",
+        "socialiteproviders/reddit": "^4.2",
+        "socialiteproviders/tiktok": "^5.2",
+        "socialiteproviders/twitter": "^4.1",
+        "socialiteproviders/youtube": "^4.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

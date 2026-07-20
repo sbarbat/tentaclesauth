@@ -12,13 +12,13 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - php - 8.5
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
+- laravel/mcp (MCP) - v0
 - laravel/prompts (PROMPTS) - v0
 - laravel/sanctum (SANCTUM) - v4
 - laravel/socialite (SOCIALITE) - v5
 - livewire/livewire (LIVEWIRE) - v3
 - larastan/larastan (LARASTAN) - v3
 - laravel/boost (BOOST) - v2
-- laravel/mcp (MCP) - v0
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
 - laravel/sail (SAIL) - v1
@@ -174,3 +174,11 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Do NOT delete tests without approval.
 
 </laravel-boost-guidelines>
+
+<app>
+This is socialglint, an AI agentic scheduling tool for social media networks. It works with Facebook, Instagram, Tiktok, X, Reddit.
+
+It allows users to query their campaigns information and stats across different platforms in one go.
+
+In the future we are looking into integrating with Analytics as well.
+</app>
