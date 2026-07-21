@@ -14,7 +14,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Maps each supported social network to the connector class that
-    | implements `App\Contracts\SocialConnectorInterface` for it, along
+    | implements `App\Contracts\OAuthConnectorInterface` for it, along
     | with the underlying Socialite driver name. Some networks require
     | a community Socialite provider package to be installed before
     | their OAuth flow will work (see socialiteproviders.com).

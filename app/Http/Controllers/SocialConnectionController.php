@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Connectors\SocialConnectorManager;
+use App\Services\Connectors\ConnectorManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 
 class SocialConnectionController extends Controller
 {
-    public function __construct(protected SocialConnectorManager $connectors) {}
+    public function __construct(protected ConnectorManager $connectors) {}
 
     /**
      * Redirect the current user to the provider's OAuth consent screen.
@@ -35,12 +35,13 @@ class SocialConnectionController extends Controller
 
         if ($request->has('error') || $request->has('error_code')) {
             $error = $this->connectors->driver($provider)->error($team, $request);
+
             return redirect()->route('dashboard')->with('flash.error', $error);
         }
 
         $this->connectors->driver($provider)->connect($team, $request);
 
-            return redirect()->route('dashboard')->with('flash.banner', ucfirst($provider).' connected successfully.');
+        return redirect()->route('dashboard')->with('flash.banner', ucfirst($provider).' connected successfully.');
     }
 
     /**

@@ -2,19 +2,18 @@
 
 namespace App\Services\Connectors;
 
+use App\Models\SocialConnection;
 use Illuminate\Support\Facades\Http;
 
-use App\Models\SocialConnection;
-
-class TiktokConnector extends AbstractSocialConnector
+class TiktokConnector extends AbstractOAuthConnector
 {
-     protected array $scopes = [
+    protected array $scopes = [
         'user.info.basic',
         'user.info.stats',
         'video.list',
         'video.publish',
         'video.data',
-     ];
+    ];
 
     public function provider(): string
     {
@@ -59,5 +58,5 @@ class TiktokConnector extends AbstractSocialConnector
     public function removeWebhook(SocialConnection $connection): bool
     {
         throw new \RuntimeException('TikTok connector not yet implemented.');
-    }   
+    }
 }

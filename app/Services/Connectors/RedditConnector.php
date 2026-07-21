@@ -4,7 +4,7 @@ namespace App\Services\Connectors;
 
 use App\Models\SocialConnection;
 
-class RedditConnector extends AbstractSocialConnector
+class RedditConnector extends AbstractOAuthConnector
 {
     public function provider(): string
     {
@@ -34,5 +34,5 @@ class RedditConnector extends AbstractSocialConnector
     public function removeWebhook(SocialConnection $connection): bool
     {
         throw new \RuntimeException('Reddit connector not yet implemented.');
-    }    
+    }
 }

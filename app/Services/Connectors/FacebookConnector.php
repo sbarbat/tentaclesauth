@@ -2,14 +2,24 @@
 
 namespace App\Services\Connectors;
 
+use App\Mcp\Tools\Facebook\GetFacebookPostStatsTool;
+use App\Mcp\Tools\Facebook\GetFacebookPostsTool;
 use App\Models\SocialConnection;
 use Illuminate\Support\Facades\Http;
 
-class FacebookConnector extends AbstractSocialConnector
+class FacebookConnector extends AbstractOAuthConnector
 {
     public function provider(): string
     {
         return 'facebook';
+    }
+
+    public function mcpTools(): array
+    {
+        return [
+            new GetFacebookPostsTool($this),
+            new GetFacebookPostStatsTool($this),
+        ];
     }
 
     public function refreshToken(SocialConnection $connection): SocialConnection

@@ -4,7 +4,7 @@ namespace App\Services\Connectors;
 
 use App\Models\SocialConnection;
 
-class XConnector extends AbstractSocialConnector
+class XConnector extends AbstractOAuthConnector
 {
     protected string $driver = 'twitter';
 

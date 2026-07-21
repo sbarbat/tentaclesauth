@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
  * Implementations encapsulate OAuth authentication, content retrieval,
  * stats retrieval, and webhook management for a single provider.
  */
-interface SocialConnectorInterface
+interface OAuthConnectorInterface
 {
     /**
      * The provider key this connector is registered under (e.g. "facebook").

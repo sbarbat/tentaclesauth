@@ -7,7 +7,7 @@ use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class InstagramConnector extends AbstractSocialConnector
+class InstagramConnector extends AbstractOAuthConnector
 {
     public function provider(): string
     {

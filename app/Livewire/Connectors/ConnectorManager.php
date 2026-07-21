@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Connectors;
 
-use App\Services\Connectors\SocialConnectorManager;
+use App\Services\Connectors\ConnectorManager as Connectors;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -14,7 +14,7 @@ class ConnectorManager extends Component
     #[Computed]
     public function providers(): array
     {
-        return app(SocialConnectorManager::class)->available();
+        return app(Connectors::class)->available();
     }
 
     #[Computed]
@@ -32,7 +32,7 @@ class ConnectorManager extends Component
         $connection = $team->socialConnections()->where('provider', $provider)->first();
 
         if ($connection) {
-            app(SocialConnectorManager::class)->driver($provider)->disconnect($connection);
+            app(Connectors::class)->driver($provider)->disconnect($connection);
         }
 
         unset($this->connections);
