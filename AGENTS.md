@@ -1,3 +1,7 @@
+<important>
+BE VERY CONSICE AND STRAIGHT TO THE POINT WITH YOUR ANSWERS.
+</important>
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

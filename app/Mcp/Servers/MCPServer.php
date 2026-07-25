@@ -31,5 +31,6 @@ class MCPServer extends Server
         parent::__construct($transport);
 
         $this->tools = array_merge($this->tools, $connectors->tools());
+        dd($this->tools);
     }
 }

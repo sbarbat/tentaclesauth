@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\SocialConnectionController;
+use App\Http\Controllers\ConnectionController;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Socialite;
 use Laravel\Mcp\Facades\Mcp;
 
-Mcp::web('/mcp', \App\Mcp\Servers\MCPServer::class)
-    ->middleware('auth:sanctum');
+Mcp::web('/mcp', \App\Mcp\Servers\MCPServer::class);
+    // ->middleware('auth:sanctum');
 
 Route::view('/', 'welcome')->name('home');
 
@@ -21,9 +21,9 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/connectors/{provider}/redirect', [SocialConnectionController::class, 'redirect'])->name('connectors.redirect');
-    Route::get('/connectors/{provider}/callback', [SocialConnectionController::class, 'callback'])->name('connectors.callback');
-    Route::delete('/connectors/{provider}', [SocialConnectionController::class, 'destroy'])->name('connectors.destroy');
+    Route::get('/connectors/{provider}/redirect', [ConnectionController::class, 'redirect'])->name('connectors.redirect');
+    Route::get('/connectors/{provider}/callback', [ConnectionController::class, 'callback'])->name('connectors.callback');
+    Route::delete('/connectors/{provider}', [ConnectionController::class, 'destroy'])->name('connectors.destroy');
 });
 
 Route::get('/privacy', function () {
