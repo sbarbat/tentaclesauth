@@ -2,7 +2,7 @@
 
 namespace App\Mcp\Servers;
 
-use App\Services\Connectors\ConnectorManager;
+use App\Connectors\ConnectorManager;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
 use Laravel\Mcp\Server\Attributes\Name;
@@ -31,6 +31,5 @@ class MCPServer extends Server
         parent::__construct($transport);
 
         $this->tools = array_merge($this->tools, $connectors->tools());
-        dd($this->tools);
     }
 }

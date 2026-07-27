@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\TeamFactory;
+use App\Models\OAuthConnection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Jetstream\Events\TeamCreated;
@@ -51,8 +52,8 @@ class Team extends JetstreamTeam
     /**
      * Get the social media connections belonging to the team.
      */
-    public function socialConnections(): HasMany
+    public function oAuthConnections(): HasMany
     {
-        return $this->hasMany(SocialConnection::class);
+        return $this->hasMany(OAuthConnection::class);
     }
 }

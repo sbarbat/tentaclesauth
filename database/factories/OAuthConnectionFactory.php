@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\SocialConnection;
+use App\Models\OAuthConnection;
 use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<SocialConnection>
+ * @extends Factory<OAuthConnection>
  */
-class SocialConnectionFactory extends Factory
+class OAuthConnectionFactory extends Factory
 {
     /**
      * Define the model's default state.

@@ -45,7 +45,7 @@ Route::get('/logout', function () {
     request()->session()->regenerateToken();
 
     return redirect()->route('home');
-})->middleware('auth:sanctum')->name('logout');
+})->middleware('auth:sanctum')->name('mylogout');
 
 Route::get('/auth/{provider}', function ($provider) {
     return Socialite::driver($provider)->redirect();

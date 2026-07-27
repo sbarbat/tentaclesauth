@@ -1,7 +1,7 @@
 <?php
 
 use App\Livewire\Mcp\ServerSetup;
-use App\Models\SocialConnection;
+use App\Models\OAuthConnection;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -19,7 +19,7 @@ test('mcp server setup is disabled when the team has no connections', function (
 test('mcp server setup shows the server url and client config when the team has connections', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
@@ -34,7 +34,7 @@ test('mcp server setup shows the server url and client config when the team has 
 test('user can generate an api key for the mcp server', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
@@ -54,7 +54,7 @@ test('user can generate an api key for the mcp server', function () {
 test('user can revoke an api key', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);

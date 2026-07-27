@@ -1,12 +1,13 @@
 <?php
 
+use App\Contracts\ConnectorToolInterface;
 use App\Mcp\Servers\MCPServer;
-use App\Mcp\Tools\Facebook\GetFacebookPostStatsTool;
-use App\Mcp\Tools\Facebook\GetFacebookPostsTool;
-use App\Models\SocialConnection;
+use App\Models\OAuthConnection;
 use App\Models\User;
-use App\Services\Connectors\ConnectorManager;
-use App\Services\Connectors\FacebookConnector;
+use App\Connectors\ConnectorManager;
+use App\Connectors\Facebook\Tools\GetFacebookPostStatsTool;
+use App\Connectors\Facebook\Tools\GetFacebookPostsTool;
+use App\Connectors\FacebookConnector;
 use Illuminate\Support\Facades\Http;
 
 test('connector manager collects the mcp tools provided by connectors', function () {
@@ -14,9 +15,28 @@ test('connector manager collects the mcp tools provided by connectors', function
 
     expect($tools)->toHaveCount(2)
         ->and(collect($tools)->map->name()->all())->toBe([
-            'facebook-get-posts',
             'facebook-get-post-stats',
+            'facebook-get-posts',
         ]);
+});
+
+test('facebook tools declare the facebook connector and scopes', function () {
+    $postsTool = new GetFacebookPostsTool;
+    $statsTool = new GetFacebookPostStatsTool;
+
+    expect($postsTool)
+        ->toBeInstanceOf(ConnectorToolInterface::class)
+        ->connector()->toBe(FacebookConnector::class)
+        ->scopes()->toBe(['pages_read_engagement'])
+        ->and($statsTool)
+        ->connector()->toBe(FacebookConnector::class)
+        ->scopes()->toBe(['pages_read_engagement']);
+});
+
+test('facebook connector compiles scopes from its tools', function () {
+    $connector = new FacebookConnector;
+
+    expect($connector->scopes())->toBe(['pages_read_engagement']);
 });
 
 test('facebook get posts tool returns the connected pages posts', function () {
@@ -30,13 +50,13 @@ test('facebook get posts tool returns the connected pages posts', function () {
 
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
 
     $response = MCPServer::actingAs($user)->tool(
-        new GetFacebookPostsTool(new FacebookConnector),
+        new GetFacebookPostsTool,
         ['limit' => 5],
     );
 
@@ -53,13 +73,13 @@ test('facebook get post stats tool returns engagement stats', function () {
 
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
 
     $response = MCPServer::actingAs($user)->tool(
-        new GetFacebookPostStatsTool(new FacebookConnector),
+        new GetFacebookPostStatsTool,
         ['post_id' => '123'],
     );
 
@@ -69,13 +89,13 @@ test('facebook get post stats tool returns engagement stats', function () {
 test('facebook get post stats tool requires a post id', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
 
     $response = MCPServer::actingAs($user)->tool(
-        new GetFacebookPostStatsTool(new FacebookConnector),
+        new GetFacebookPostStatsTool,
     );
 
     $response->assertHasErrors();
@@ -85,7 +105,7 @@ test('connector tools are not registered when the team has no connection for the
     $user = User::factory()->withPersonalTeam()->create();
 
     $response = MCPServer::actingAs($user)->tool(
-        new GetFacebookPostsTool(new FacebookConnector),
+        new GetFacebookPostsTool,
     );
 
     $response->assertHasErrors(['Tool [facebook-get-posts] not found.']);

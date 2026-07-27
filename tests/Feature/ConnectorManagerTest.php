@@ -1,7 +1,7 @@
 <?php
 
 use App\Livewire\Connectors\ConnectorManager;
-use App\Models\SocialConnection;
+use App\Models\OAuthConnection;
 use App\Models\User;
 use Livewire\Livewire;
 
@@ -18,7 +18,7 @@ test('connectors component lists available providers', function () {
 test('connectors component shows connected providers for the current team', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    SocialConnection::factory()->create([
+    OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
         'provider_account_name' => 'Acme Page',
@@ -32,7 +32,7 @@ test('connectors component shows connected providers for the current team', func
 test('team owner can disconnect a provider', function () {
     $user = User::factory()->withPersonalTeam()->create();
 
-    $connection = SocialConnection::factory()->create([
+    $connection = OAuthConnection::factory()->create([
         'team_id' => $user->currentTeam->id,
         'provider' => 'facebook',
     ]);
@@ -41,5 +41,5 @@ test('team owner can disconnect a provider', function () {
         ->test(ConnectorManager::class)
         ->call('disconnect', 'facebook');
 
-    expect(SocialConnection::find($connection->id))->toBeNull();
+    expect(OAuthConnection::find($connection->id))->toBeNull();
 });

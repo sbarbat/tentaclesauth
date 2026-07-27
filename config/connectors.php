@@ -1,10 +1,10 @@
 <?php
 
-use App\Services\Connectors\FacebookConnector;
-use App\Services\Connectors\InstagramConnector;
-use App\Services\Connectors\RedditConnector;
-use App\Services\Connectors\TiktokConnector;
-use App\Services\Connectors\XConnector;
+use App\Connectors\Facebook\FacebookConnector;
+use App\Connectors\Instagram\InstagramConnector;
+use App\Connectors\Reddit\RedditConnector;
+use App\Connectors\Tiktok\TiktokConnector;
+use App\Connectors\X\XConnector;
 
 return [
 

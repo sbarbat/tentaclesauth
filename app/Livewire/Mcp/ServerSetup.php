@@ -36,7 +36,7 @@ class ServerSetup extends Component
     #[Computed]
     public function hasConnections(): bool
     {
-        return Auth::user()->currentTeam->socialConnections()->exists();
+        return Auth::user()->currentTeam->oAuthConnections()->exists();
     }
 
     /**

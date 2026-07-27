@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Contracts;
+namespace App\Connectors;
 
-use App\Models\SocialConnection;
+use App\Models\OAuthConnection;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Laravel\Mcp\Server\Tool;
 
 /**
  * Contract that must be implemented by every social media network
@@ -19,7 +20,7 @@ interface OAuthConnectorInterface
     /**
      * The provider key this connector is registered under (e.g. "facebook").
      */
-    public function provider(): string;
+    public static function provider(): string;
 
     /**
      * Redirect the user to the provider's OAuth consent screen.
@@ -28,9 +29,9 @@ interface OAuthConnectorInterface
 
     /**
      * Handle the OAuth callback, exchange the code for tokens, and
-     * persist a `SocialConnection` record linked to the given team.
+     * persist a `OAuthConnection` record linked to the given team.
      */
-    public function connect(Team $team, Request $request): SocialConnection;
+    public function connect(Team $team, Request $request): OAuthConnection;
 
     /**
      * Handle an error response from the provider's OAuth flow.
@@ -41,36 +42,25 @@ interface OAuthConnectorInterface
      * Refresh an expired (or soon to expire) access token and persist
      * the updated credentials on the connection.
      */
-    public function refreshToken(SocialConnection $connection): SocialConnection;
+    public function refreshToken(OAuthConnection $connection): OAuthConnection;
 
     /**
      * Disconnect the team from the provider, revoking tokens where
      * supported by the provider's API.
      */
-    public function disconnect(SocialConnection $connection): bool;
+    public function disconnect(OAuthConnection $connection): bool;
 
     /**
-     * Fetch the most recent posts published through this connection.
+     * Get all MCP tool instances connected to this connector.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<int, Tool>
      */
-    public function getPosts(SocialConnection $connection, int $limit = 25): array;
+    public function tools(): array;
 
     /**
-     * Fetch engagement/performance stats for a single post.
+     * Compile the OAuth scopes required by this connector and its tools.
      *
-     * @return array<string, mixed>
+     * @return array<int, string>
      */
-    public function getPostStats(SocialConnection $connection, string $postId): array;
-
-    /**
-     * Register a webhook with the provider so the application can
-     * receive real-time updates (e.g. new comments, mentions).
-     */
-    public function setWebhook(SocialConnection $connection, string $callbackUrl): bool;
-
-    /**
-     * Remove a previously registered webhook.
-     */
-    public function removeWebhook(SocialConnection $connection): bool;
+    public function scopes(): array;
 }

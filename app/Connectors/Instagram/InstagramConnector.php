@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Services\Connectors;
+namespace App\Connectors\Instagram;
 
-use App\Models\SocialConnection;
+use App\Connectors\AbstractOAuthConnector;
+use App\Models\OAuthConnection;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class InstagramConnector extends AbstractOAuthConnector
 {
-    public function provider(): string
+    public static function provider(): string
     {
         return 'instagram';
     }
 
-    public function connect(Team $team, Request $request): SocialConnection
+    public function connect(Team $team, Request $request): OAuthConnection
     {
         $connection = parent::connect($team, $request);
 
@@ -33,7 +34,7 @@ class InstagramConnector extends AbstractOAuthConnector
     }
 
     // Should refresh every 60 days
-    public function refreshToken(SocialConnection $connection): SocialConnection
+    public function refreshToken(OAuthConnection $connection): OAuthConnection
     {
         $response = Http::get('https://graph.instagram.com/refresh_access_token', [
             'grant_type' => 'ig_refresh_token',
@@ -46,25 +47,5 @@ class InstagramConnector extends AbstractOAuthConnector
         ])->save();
 
         return $connection;
-    }
-
-    public function getPosts(SocialConnection $connection, int $limit = 25): array
-    {
-        throw new \RuntimeException('Instagram connector not yet implemented.');
-    }
-
-    public function getPostStats(SocialConnection $connection, string $postId): array
-    {
-        throw new \RuntimeException('Instagram connector not yet implemented.');
-    }
-
-    public function setWebhook(SocialConnection $connection, string $callbackUrl): bool
-    {
-        throw new \RuntimeException('Instagram connector not yet implemented.');
-    }
-
-    public function removeWebhook(SocialConnection $connection): bool
-    {
-        throw new \RuntimeException('Instagram connector not yet implemented.');
     }
 }

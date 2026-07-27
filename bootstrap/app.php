@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         
         $middleware->preventRequestForgery(except: [
+            'mcp',
             'mcp/*',
         ]);
     })

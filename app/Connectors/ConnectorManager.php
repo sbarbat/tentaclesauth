@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Services\Connectors;
+namespace App\Connectors;
 
-use App\Contracts\OAuthConnectorInterface;
-use App\Contracts\ProvidesMcpTools;
+use App\Connectors\OAuthConnectorInterface;
 use InvalidArgumentException;
 use Laravel\Mcp\Server\Tool;
 
@@ -49,16 +48,14 @@ class ConnectorManager
     }
 
     /**
-     * Collect all MCP tools exposed by connectors that implement
-     * `ProvidesMcpTools`.
+     * Collect all MCP tools exposed by registered connectors.
      *
      * @return array<int, Tool>
      */
     public function tools(): array
     {
         return collect($this->all())
-            ->filter(fn (OAuthConnectorInterface $connector) => $connector instanceof ProvidesMcpTools)
-            ->flatMap(fn (ProvidesMcpTools $connector) => $connector->mcpTools())
+            ->flatMap(fn (OAuthConnectorInterface $connector) => $connector->tools())
             ->all();
     }
 }

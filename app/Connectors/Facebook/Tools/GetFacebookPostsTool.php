@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Mcp\Tools\Facebook;
+namespace App\Connectors\Facebook\Tools;
 
-use App\Mcp\Tools\ConnectorTool;
+use App\Connectors\ConnectorTool;
+use App\Connectors\FacebookConnector;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Laravel\Mcp\Request;
@@ -13,6 +15,21 @@ class GetFacebookPostsTool extends ConnectorTool
     protected string $name = 'facebook-get-posts';
 
     protected string $description = 'Fetch the most recent posts published on the connected Facebook page.';
+
+    public function connector(): string
+    {
+        return FacebookConnector::provider();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function scopes(): array
+    {
+        return [
+            'pages_read_engagement',
+        ];
+    }
 
     /**
      * Get the tool's input schema.
@@ -43,8 +60,15 @@ class GetFacebookPostsTool extends ConnectorTool
             return $this->notConnectedResponse();
         }
 
-        $posts = $this->connector->getPosts($connection, $validated['limit'] ?? 25);
+        $limit = $validated['limit'] ?? 25;
 
-        return Response::json($posts);
+        $response = Http::withToken($connection->access_token)
+            ->get("https://graph.facebook.com/v19.0/{$connection->provider_account_id}/posts", [
+                'limit' => $limit,
+                'fields' => 'id,message,created_time,permalink_url',
+            ])
+            ->throw();
+
+        return Response::json($response->json('data', []));        
     }
 }

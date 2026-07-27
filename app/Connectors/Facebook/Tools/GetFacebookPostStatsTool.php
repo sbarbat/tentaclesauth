@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Mcp\Tools\Facebook;
+namespace App\Connectors\Facebook\Tools;
 
-use App\Mcp\Tools\ConnectorTool;
+use App\Connectors\ConnectorTool;
+use App\Connectors\Facebook\FacebookConnector;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Laravel\Mcp\Request;
@@ -13,6 +15,21 @@ class GetFacebookPostStatsTool extends ConnectorTool
     protected string $name = 'facebook-get-post-stats';
 
     protected string $description = 'Fetch engagement stats (likes, comments, shares) for a single Facebook post.';
+
+    public function connector(): string
+    {
+        return FacebookConnector::provider();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function scopes(): array
+    {
+        return [
+            'pages_read_engagement',
+        ];
+    }
 
     /**
      * Get the tool's input schema.
@@ -43,8 +60,13 @@ class GetFacebookPostStatsTool extends ConnectorTool
             return $this->notConnectedResponse();
         }
 
-        $stats = $this->connector->getPostStats($connection, $validated['post_id']);
+        $response = Http::withToken($connection->access_token)
+            ->get("https://graph.facebook.com/v19.0/{$postId}", [
+                'fields' => 'likes.summary(true),comments.summary(true),shares',
+            ])
+            ->throw();
 
-        return Response::json($stats);
+        return Response::json($response->json() ?? []);
     }
+
 }

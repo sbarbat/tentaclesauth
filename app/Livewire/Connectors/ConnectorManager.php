@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Connectors;
 
-use App\Services\Connectors\ConnectorManager as Connectors;
+use App\Connectors\ConnectorManager as Connectors;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -20,7 +20,7 @@ class ConnectorManager extends Component
     #[Computed]
     public function connections()
     {
-        return Auth::user()->currentTeam->socialConnections()->get()->keyBy('provider');
+        return Auth::user()->currentTeam->oAuthConnections()->get()->keyBy('provider');
     }
 
     public function disconnect(string $provider): void
@@ -29,7 +29,7 @@ class ConnectorManager extends Component
 
         Gate::authorize('update', $team);
 
-        $connection = $team->socialConnections()->where('provider', $provider)->first();
+        $connection = $team->oAuthConnections()->where('provider', $provider)->first();
 
         if ($connection) {
             app(Connectors::class)->driver($provider)->disconnect($connection);

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Services\Connectors;
+namespace App\Connectors\Tiktok;
 
-use App\Models\SocialConnection;
+use App\Connectors\AbstractOAuthConnector;
+use App\Models\OAuthConnection;
 use Illuminate\Support\Facades\Http;
 
 class TiktokConnector extends AbstractOAuthConnector
@@ -15,13 +16,13 @@ class TiktokConnector extends AbstractOAuthConnector
         'video.data',
     ];
 
-    public function provider(): string
+    public static function provider(): string
     {
         return 'tiktok';
     }
 
     // Should refresh every 365 days
-    public function refreshToken(SocialConnection $connection): SocialConnection
+    public function refreshToken(OAuthConnection $connection): OAuthConnection
     {
         $response = Http::get('https://open.tiktokapis.com/v2/oauth/token/', [
             'client_key' => config('services.tiktok.client_id'),
@@ -38,25 +39,5 @@ class TiktokConnector extends AbstractOAuthConnector
         ])->save();
 
         return $connection;
-    }
-
-    public function getPosts(SocialConnection $connection, int $limit = 25): array
-    {
-        throw new \RuntimeException('TikTok connector not yet implemented.');
-    }
-
-    public function getPostStats(SocialConnection $connection, string $postId): array
-    {
-        throw new \RuntimeException('TikTok connector not yet implemented.');
-    }
-
-    public function setWebhook(SocialConnection $connection, string $callbackUrl): bool
-    {
-        throw new \RuntimeException('TikTok connector not yet implemented.');
-    }
-
-    public function removeWebhook(SocialConnection $connection): bool
-    {
-        throw new \RuntimeException('TikTok connector not yet implemented.');
     }
 }

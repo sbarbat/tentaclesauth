@@ -2,15 +2,19 @@
 
 namespace App\Models;
 
-use Database\Factories\SocialConnectionFactory;
+use Illuminate\Database\Eloquent\Attributes\Table;
+use Database\Factories\OAuthConnectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SocialConnection extends Model
+#[Table('oauth_connections')]
+class OAuthConnection extends Model
 {
-    /** @use HasFactory<SocialConnectionFactory> */
+    /** @use HasFactory<OAuthConnectionFactory> */
     use HasFactory;
+
+
 
     /**
      * The attributes that are mass assignable.

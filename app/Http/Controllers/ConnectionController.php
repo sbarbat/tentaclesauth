@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Connectors\ConnectorManager;
+use App\Connectors\ConnectorManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +53,7 @@ class ConnectionController extends Controller
 
         Gate::authorize('update', $team);
 
-        $connection = $team->socialConnections()->where('provider', $provider)->firstOrFail();
+        $connection = $team->oAuthConnections()->where('provider', $provider)->firstOrFail();
 
         $this->connectors->driver($provider)->disconnect($connection);
 

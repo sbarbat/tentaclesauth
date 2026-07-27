@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('social_connections', function (Blueprint $table) {
+        Schema::create('oauth_connections', function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->string('provider');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('social_connections');
+        Schema::dropIfExists('oauth_connections');
     }
 };
