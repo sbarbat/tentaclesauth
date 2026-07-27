@@ -35,7 +35,6 @@ abstract class ConnectorTool extends Tool implements ConnectorToolInterface
     protected function connectionFor(Request $request): ?OAuthConnection
     {
         $team = $request->user()?->currentTeam;
-
         if (! $team) {
             return null;
         }
@@ -51,7 +50,7 @@ abstract class ConnectorTool extends Tool implements ConnectorToolInterface
      */
     protected function getConnector(): OAuthConnectorInterface
     {
-        return $this->connectorInstance ??= app($this->connector());
+        return $this->connectorInstance ??= app(ConnectorManager::class)->driver($this->connector());
     }
 
     /**

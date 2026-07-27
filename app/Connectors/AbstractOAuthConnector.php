@@ -6,6 +6,7 @@ use App\Connectors\ConnectorToolInterface;
 use App\Connectors\OAuthConnectorInterface;
 use App\Models\OAuthConnection;
 use App\Models\Team;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Laravel\Mcp\Server\Tool;
@@ -137,39 +138,40 @@ abstract class AbstractOAuthConnector implements OAuthConnectorInterface
     protected function discoverTools(): array
     {
         $reflection = new ReflectionClass(static::class);
-        $connectorName = str_replace('Connector', '', class_basename(static::class));
-        $directory = dirname($reflection->getFileName()).'/'.$connectorName.'/Tools';
+        $directory = dirname($reflection->getFileName()).'/Tools';
 
         if (! is_dir($directory)) {
             return [];
         }
 
-        $namespace = $reflection->getNamespaceName().'\\'.$connectorName.'\\Tools';
+        $namespace = $reflection->getNamespaceName().'\\Tools';
         $tools = [];
         $finder = new Finder;
         $finder->files()->in($directory)->name('*.php')->depth(0);
+        $finder->sortByName();
 
         foreach ($finder as $file) {
             $class = $namespace.'\\'.$file->getBasename('.php');
 
             if (! class_exists($class)) {
+                Log::debug("Tool class {$class} does not exist and will be ignored.");
                 continue;
             }
 
             $instance = new $class;
 
             if (! $instance instanceof ConnectorToolInterface) {
+                Log::debug("Tool {$class} does not implement ConnectorToolInterface and will be ignored.");
                 continue;
             }
 
-            if ($instance->connector() !== static::class) {
+            if ($instance->connector() !== static::provider()) {
+                Log::warning("Tool {$class} does not point to connector ".static::provider()." and will be ignored.");
                 continue;
             }
 
             $tools[] = $instance;
         }
-
-        usort($tools, fn (Tool $a, Tool $b) => $a->name() <=> $b->name());
 
         return $tools;
     }

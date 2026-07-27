@@ -3,7 +3,7 @@
 namespace App\Connectors\Facebook\Tools;
 
 use App\Connectors\ConnectorTool;
-use App\Connectors\FacebookConnector;
+use App\Connectors\Facebook\FacebookConnector;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
