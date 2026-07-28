@@ -23,6 +23,10 @@
                 <div>
                     <div class="text-sm font-semibold text-gray-800">{{ __('1. Your MCP server URL') }}</div>
 
+                    <p class="mt-1 text-xs text-gray-500">
+                        {{ __('Use this in your AI MCP Server with Transport Protocol as HTTP. To use a specific connector use /mcp/facebook for example.') }}
+                    </p>
+
                     <div class="mt-2 flex items-center gap-2">
                         <x-input type="text" readonly value="{{ $this->mcpUrl }}"
                             class="flex-1 font-mono text-xs bg-gray-50" />
