@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Http;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 
-class GetFacebookPostStatsTool extends ConnectorTool
+class GetFacebookMyPhotosTool extends ConnectorTool
 {
-    protected string $name = 'facebook-get-post-stats';
+    protected string $name = 'facebook-get-my-photos';
 
-    protected string $description = 'Fetch engagement stats (likes, comments, shares) for a single Facebook post.';
+    protected string $description = 'Fetch the authenticated Facebook user\'s photos.';
 
     public function connector(): string
     {
@@ -39,9 +39,7 @@ class GetFacebookPostStatsTool extends ConnectorTool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'post_id' => $schema->string()
-                ->description('The ID of the Facebook post to fetch stats for.')
-                ->required(),
+            // No input required for fetching the authenticated user's basic information.
         ];
     }
 
@@ -50,10 +48,6 @@ class GetFacebookPostStatsTool extends ConnectorTool
      */
     public function handle(Request $request): Response
     {
-        $validated = $request->validate([
-            'post_id' => 'required|string',
-        ]);
-
         $connection = $this->connectionFor($request);
 
         if (! $connection) {
@@ -61,8 +55,8 @@ class GetFacebookPostStatsTool extends ConnectorTool
         }
 
         $response = Http::withToken($connection->access_token)
-            ->get("https://graph.facebook.com/v19.0/{$validated['post_id']}", [
-                'fields' => 'likes.summary(true),comments.summary(true),shares',
+            ->get('https://graph.facebook.com/me/photos', [
+                'fields' => 'id,name,images',
             ]);
 
         return Response::json($response->json() ?? []);

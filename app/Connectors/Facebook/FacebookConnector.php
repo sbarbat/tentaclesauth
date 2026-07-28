@@ -22,7 +22,7 @@ class FacebookConnector extends AbstractOAuthConnector
             'fb_exchange_token' => $connection->access_token,
         ])->throw();
 
-        $connection->forceFill([
+        $connection->fill([
             'access_token' => $response->json('access_token'),
             'token_expires_at' => now()->addSeconds($response->json('expires_in', 0)),
         ])->save();

@@ -15,6 +15,8 @@ use Laravel\Mcp\Server\Contracts\Transport;
 #[Instructions('Instructions describing how to use the server and its features.')]
 class MCPServer extends Server
 {
+    private readonly ConnectorManager $connectorsManager;
+
     protected array $tools = [
         //
     ];
@@ -27,12 +29,25 @@ class MCPServer extends Server
         //
     ];
 
-    public function __construct(Transport $transport, ConnectorManager $connectors)
+    public function __construct(Transport $transport, ConnectorManager $connectorsManager)
     {
         parent::__construct($transport);
 
-        $this->tools = array_merge($this->tools, $connectors->tools());
+        $this->connectorsManager = $connectorsManager;
+    }
 
-        Log::debug('MCPServer tools', ['count' => count($this->tools), 'tools' => $this->tools]);
+
+    protected function boot(): void
+    {
+        $path = request()->path();
+        $connector = str_replace('mcp/', '', $path);
+
+        if ($connector && $connector !== 'mcp' && $this->connectorsManager->driver($connector)) {
+            $this->tools = array_merge($this->tools, $this->connectorsManager->driver($connector)->tools());
+            Log::debug('MCPServer tools for connector ' . $connector, ['count' => count($this->tools), 'tools' => $this->tools]);
+        } else {
+            // $this->tools = array_merge($this->tools, $this->connectorsManager->tools());
+            Log::debug('MCPServer tools', ['count' => count($this->tools), 'tools' => $this->tools]);
+        }
     }
 }

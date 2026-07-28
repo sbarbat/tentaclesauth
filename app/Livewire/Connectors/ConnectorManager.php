@@ -23,6 +23,30 @@ class ConnectorManager extends Component
         return Auth::user()->currentTeam->oAuthConnections()->get()->keyBy('provider');
     }
 
+    public function refresh(string $provider): void
+    {
+        $team = Auth::user()->currentTeam;
+
+        Gate::authorize('update', $team);
+
+        $connection = $team->oAuthConnections()->where('provider', $provider)->first();
+        if (! $connection) {
+            return;
+        }
+
+        try {
+            app(Connectors::class)->driver($provider)->refreshToken($connection);
+        } catch (\Throwable $e) {
+            $this->addError('refresh', $e->getMessage());
+
+            return;
+        }
+
+        unset($this->connections);
+
+        $this->dispatch('refresh-token-updated');
+    }
+
     public function disconnect(string $provider): void
     {
         $team = Auth::user()->currentTeam;

@@ -28,8 +28,13 @@
                             @endif
                         </div>
 
-                        <div>
+                        <div class="flex items-center gap-2">
                             @if ($connection)
+                                <x-secondary-button wire:click="refresh('{{ $provider }}')"
+                                    wire:loading.attr="disabled">
+                                    {{ __('Refresh') }}
+                                </x-secondary-button>
+
                                 <x-danger-button wire:click="disconnect('{{ $provider }}')"
                                     wire:loading.attr="disabled">
                                     {{ __('Disconnect') }}

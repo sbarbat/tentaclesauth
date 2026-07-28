@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Socialite;
 use Laravel\Mcp\Facades\Mcp;
 
-Mcp::web('/mcp', \App\Mcp\Servers\MCPServer::class)
+Mcp::web('/mcp/{connector?}', \App\Mcp\Servers\MCPServer::class)
     ->middleware('auth:sanctum');
 
 Route::view('/', 'welcome')->name('home');
