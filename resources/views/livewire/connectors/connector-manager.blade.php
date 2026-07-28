@@ -21,7 +21,7 @@
                                 <div class="text-xs text-gray-500">
                                     {{ __('Connected as :name', ['name' => $connection->provider_account_name ?? $connection->provider_account_id]) }}
                                     -
-                                    {{ __('Token expires in :date', ['date' => ($connection->refresh_token_expires_at ?? $connection->token_expires_at)->diffForHumans()]) }}
+                                    {{ __('Token expires in :date', ['date' => ($connection->refresh_token_expires_at ?? $connection->token_expires_at ?? now())->diffForHumans()]) }}
                                 </div>
                             @else
                                 <div class="text-xs text-gray-400">{{ __('Not connected') }}</div>

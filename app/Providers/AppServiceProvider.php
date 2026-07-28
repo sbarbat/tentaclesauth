@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use SocialiteProviders\Facebook\Provider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,12 +33,15 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
-            $event->extendSocialite('facebook', \SocialiteProviders\Facebook\Provider::class);
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('facebook', Provider::class);
             $event->extendSocialite('instagram', \SocialiteProviders\Instagram\Provider::class);
             $event->extendSocialite('reddit', \SocialiteProviders\Reddit\Provider::class);
             $event->extendSocialite('tiktok', \SocialiteProviders\TikTok\Provider::class);
             $event->extendSocialite('twitter', \SocialiteProviders\Twitter\Provider::class);
+            $event->extendSocialite('monzo', \SocialiteProviders\Monzo\Provider::class);
+            $event->extendSocialite('xero', \SocialiteProviders\Xero\Provider::class);
+            $event->extendSocialite('github', \SocialiteProviders\GitHub\Provider::class);
         });
     }
 
@@ -52,13 +57,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         Password::defaults(
-            fn(): ?Password => app()->isProduction()
+            fn (): ?Password => app()->isProduction()
                 ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
+                    ->mixedCase()
+                    ->letters()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised()
                 : null,
         );
     }

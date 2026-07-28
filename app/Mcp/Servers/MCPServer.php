@@ -36,17 +36,18 @@ class MCPServer extends Server
         $this->connectorsManager = $connectorsManager;
     }
 
-
     protected function boot(): void
     {
         $path = request()->path();
         $connector = str_replace('mcp/', '', $path);
 
-        if ($connector && $connector !== 'mcp' && $this->connectorsManager->driver($connector)) {
+        if ($connector && $connector !== '/' && $connector !== 'mcp' && $this->connectorsManager->driver($connector)) {
             $this->tools = array_merge($this->tools, $this->connectorsManager->driver($connector)->tools());
-            Log::debug('MCPServer tools for connector ' . $connector, ['count' => count($this->tools), 'tools' => $this->tools]);
+            app()->instance('mcp.connector', $connector);
+            Log::debug('MCPServer tools for connector '.$connector, ['count' => count($this->tools), 'tools' => $this->tools]);
         } else {
-            // $this->tools = array_merge($this->tools, $this->connectorsManager->tools());
+            $this->tools = array_merge($this->tools, $this->connectorsManager->tools());
+            app()->instance('mcp.connector', 'all');
             Log::debug('MCPServer tools', ['count' => count($this->tools), 'tools' => $this->tools]);
         }
     }

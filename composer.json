@@ -21,11 +21,14 @@
         "livewire/livewire": "^3.6.4",
         "predis/predis": "^3.5",
         "socialiteproviders/facebook": "^4.1",
+        "socialiteproviders/github": "^4.1",
         "socialiteproviders/instagram": "^5.2",
+        "socialiteproviders/monzo": "^4.0",
         "socialiteproviders/pinterest": "^4.3",
         "socialiteproviders/reddit": "^4.2",
         "socialiteproviders/tiktok": "^5.2",
         "socialiteproviders/twitter": "^4.1",
+        "socialiteproviders/xero": "^4.2",
         "socialiteproviders/youtube": "^4.1"
     },
     "require-dev": {

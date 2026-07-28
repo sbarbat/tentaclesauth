@@ -1,24 +1,21 @@
 <?php
 
-namespace App\Connectors\Facebook\Tools;
+namespace App\Connectors\Monzo\Tools;
 
 use App\Connectors\ConnectorTool;
-use App\Connectors\Facebook\FacebookConnector;
+use App\Connectors\Monzo\MonzoConnector;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
-use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Http;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\Title;
 
-class GetFacebookPostStatsTool extends ConnectorTool
+#[Title('List Monzo Account Transactions')]
+class MonzoListTransactionsTool extends ConnectorTool
 {
-    protected string $name = 'facebook-get-post-stats';
-
-    protected string $description = 'Fetch engagement stats (likes, comments, shares) for a single Facebook post.';
-
     public function connector(): string
     {
-        return FacebookConnector::provider();
+        return MonzoConnector::provider();
     }
 
     /**
@@ -29,8 +26,8 @@ class GetFacebookPostStatsTool extends ConnectorTool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'post_id' => $schema->string()
-                ->description('The ID of the Facebook post to fetch stats for.')
+            'account_id' => $schema->string()
+                ->description('The ID of the Monzo account to fetch the transactions for. You can obtain this ID by using the "List Monzo Accounts" tool.')
                 ->required(),
         ];
     }
@@ -41,7 +38,7 @@ class GetFacebookPostStatsTool extends ConnectorTool
     public function handle(Request $request): Response
     {
         $validated = $request->validate([
-            'post_id' => 'required|string',
+            'account_id' => 'required|string',
         ]);
 
         $connection = $this->connectionFor($request);
@@ -51,8 +48,8 @@ class GetFacebookPostStatsTool extends ConnectorTool
         }
 
         $response = Http::withToken($connection->access_token)
-            ->get("https://graph.facebook.com/v19.0/{$validated['post_id']}", [
-                'fields' => 'likes.summary(true),comments.summary(true),shares',
+            ->get('https://api.monzo.com/transactions', [
+                'account_id' => $validated['account_id'],
             ]);
 
         return Response::json($response->json() ?? []);

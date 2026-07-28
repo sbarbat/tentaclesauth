@@ -2,8 +2,6 @@
 
 namespace App\Connectors;
 
-use App\Connectors\ConnectorToolInterface;
-use App\Connectors\OAuthConnectorInterface;
 use App\Models\OAuthConnection;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -22,11 +20,24 @@ abstract class ConnectorTool extends Tool implements ConnectorToolInterface
     protected ?OAuthConnectorInterface $connectorInstance = null;
 
     /**
-     * Only expose the tool when the current team is connected to the provider.
+     * Only expose the tool when the current team is connected to the provider,
+     * unless the MCP server is listing tools without a specific connector.
      */
-    public function shouldRegister(Request $request): bool
+    public function shouldRegister(): bool
     {
-        return $this->connectionFor($request) !== null;
+        if (app()->bound('mcp.connector') && app('mcp.connector') === 'all') {
+            return true;
+        }
+
+        $team = auth()->user()?->currentTeam;
+
+        if (! $team) {
+            return false;
+        }
+
+        return $team->oAuthConnections()
+            ->where('provider', $this->getConnector()->provider())
+            ->exists();
     }
 
     /**
@@ -61,5 +72,10 @@ abstract class ConnectorTool extends Tool implements ConnectorToolInterface
         return Response::error(
             "Your team has not connected {$this->getConnector()->provider()} yet. Connect it first, then try again."
         );
+    }
+
+    public function scopes(): array
+    {
+        return [];
     }
 }

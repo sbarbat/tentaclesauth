@@ -9,26 +9,14 @@ use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Http;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
+use Laravel\Mcp\Server\Attributes\Title;
 
+#[Title('Get Facebook Me')]
 class GetFacebookMeTool extends ConnectorTool
 {
-    protected string $name = 'facebook-get-me';
-
-    protected string $description = 'Fetch basic information about the authenticated Facebook user.';
-
     public function connector(): string
     {
         return FacebookConnector::provider();
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    public function scopes(): array
-    {
-        return [
-            'pages_read_engagement',
-        ];
     }
 
     /**

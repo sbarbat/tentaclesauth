@@ -22,16 +22,6 @@ class GetFacebookMyPhotosTool extends ConnectorTool
     }
 
     /**
-     * @return array<int, string>
-     */
-    public function scopes(): array
-    {
-        return [
-            'pages_read_engagement',
-        ];
-    }
-
-    /**
      * Get the tool's input schema.
      *
      * @return array<string, Type>

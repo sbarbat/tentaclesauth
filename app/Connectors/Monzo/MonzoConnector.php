@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Connectors\X;
+namespace App\Connectors\Monzo;
 
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\RedirectResponse;
 use App\Connectors\AbstractOAuthConnector;
 use App\Models\OAuthConnection;
 
-class XConnector extends AbstractOAuthConnector
+class MonzoConnector extends AbstractOAuthConnector
 {
-    protected string $driver = 'twitter';
-
     public static function provider(): string
     {
-        return 'x';
+        return 'monzo';
     }
 
     public function refreshToken(OAuthConnection $connection): OAuthConnection
     {
-        throw new \RuntimeException('X connector not yet implemented.');
+        return $connection;
     }
 }

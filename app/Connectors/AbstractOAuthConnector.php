@@ -2,13 +2,12 @@
 
 namespace App\Connectors;
 
-use App\Connectors\ConnectorToolInterface;
-use App\Connectors\OAuthConnectorInterface;
 use App\Models\OAuthConnection;
 use App\Models\Team;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Mcp\Server\Tool;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
@@ -26,7 +25,7 @@ abstract class AbstractOAuthConnector implements OAuthConnectorInterface
      * The Socialite driver name used by this connector, if it differs
      * from the provider key (e.g. "x" uses the "twitter" driver).
      */
-    protected static string $driver;
+    protected string $driver;
 
     /**
      * Base OAuth scopes required by the connector regardless of which
@@ -45,21 +44,35 @@ abstract class AbstractOAuthConnector implements OAuthConnectorInterface
 
     public function __construct()
     {
-        static::$driver = static::$driver ?? static::provider();
+        $reflection = new ReflectionClass(static::class);
+        $defaults = $reflection->getDefaultProperties();
+
+        $this->driver = $defaults['driver'] ?? static::provider();
     }
 
     public function redirect(): RedirectResponse
     {
-        return Socialite::driver(static::$driver)
+        $randomState = bin2hex(random_bytes(16));
+
+        Cache::put("oauth_state_{$randomState}", true, now()->addMinutes(5));
+        
+        return Socialite::driver($this->driver)
             ->scopes($this->scopes())
-            ->stateless()
+            ->with(['state' => $randomState])
             ->redirect();
     }
 
     public function connect(Team $team, Request $request): OAuthConnection
     {
+        $state = $request->input('state');
+        $stateValue = Cache::get("oauth_state_{$state}");
+        if (! $stateValue) {
+            throw new \Exception('Invalid or expired OAuth state.');
+        }
+        Cache::forget("oauth_state_{$state}");
+
         /** @var SocialiteUser $socialiteUser */
-        $socialiteUser = Socialite::driver(static::$driver)
+        $socialiteUser = Socialite::driver($this->driver)
             ->stateless()
             ->user();
 
@@ -155,6 +168,7 @@ abstract class AbstractOAuthConnector implements OAuthConnectorInterface
 
             if (! class_exists($class)) {
                 Log::debug("Tool class {$class} does not exist and will be ignored.");
+
                 continue;
             }
 
@@ -162,11 +176,13 @@ abstract class AbstractOAuthConnector implements OAuthConnectorInterface
 
             if (! $instance instanceof ConnectorToolInterface) {
                 Log::debug("Tool {$class} does not implement ConnectorToolInterface and will be ignored.");
+
                 continue;
             }
 
             if ($instance->connector() !== static::provider()) {
-                Log::warning("Tool {$class} does not point to connector ".static::provider()." and will be ignored.");
+                Log::warning("Tool {$class} does not point to connector ".static::provider().' and will be ignored.');
+
                 continue;
             }
 

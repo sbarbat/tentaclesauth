@@ -2,6 +2,7 @@
 
 use App\Connectors\Facebook\FacebookConnector;
 use App\Connectors\Instagram\InstagramConnector;
+use App\Connectors\Monzo\MonzoConnector;
 use App\Connectors\Reddit\RedditConnector;
 use App\Connectors\Tiktok\TiktokConnector;
 use App\Connectors\X\XConnector;
@@ -50,6 +51,24 @@ return [
             'label' => 'Reddit',
             'driver' => 'reddit',
             'class' => RedditConnector::class,
+        ],
+
+        'monzo' => [
+            'label' => 'Monzo',
+            'driver' => 'monzo',
+            'class' => MonzoConnector::class,
+        ],
+
+        'xero' => [
+            'label' => 'Xero',
+            'driver' => 'xero',
+            'class' => \App\Connectors\Xero\XeroConnector::class,
+        ],
+
+        'github' => [
+            'label' => 'GitHub',
+            'driver' => 'github',
+            'class' => \App\Connectors\Github\GithubConnector::class,
         ],
     ],
 

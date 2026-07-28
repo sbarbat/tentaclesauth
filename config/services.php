@@ -74,7 +74,24 @@ return [
     'tiktok' => [
         'client_id' => env('TIKTOK_CLIENT_ID'),
         'client_secret' => env('TIKTOK_CLIENT_SECRET'),
-        'redirect' => env('TIKTOK_REDIRECT_URI')
+        'redirect' => env('TIKTOK_REDIRECT_URI'),
     ],
 
+    'monzo' => [
+        'client_id' => env('MONZO_CLIENT_ID'),
+        'client_secret' => env('MONZO_CLIENT_SECRET'),
+        'redirect' => env('MONZO_REDIRECT_URI'),
+    ],
+
+    'xero' => [
+        'client_id' => env('XERO_CLIENT_ID'),
+        'client_secret' => env('XERO_CLIENT_SECRET'),
+        'redirect' => env('XERO_REDIRECT_URI'),
+    ],
+
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECRET'),
+        'redirect' => env('GITHUB_REDIRECT_URI')
+    ],
 ];
